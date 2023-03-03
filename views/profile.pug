@@ -70,10 +70,18 @@ block content
                 a(href="?erase") erase my data
 
             h5        
-                a(href="/account/close") close my account
+                a(href="?close") close my account
 
     if "changePassword" in query
         +passwordForm(bodyWithError ? bodyWithError.pop() : undefined)
 
     if "erase" in query
         +modal-dialog({title: "Confirmation", message: `All of your accounts (${user.accountCount}) will be deleted forever. This operation can not be undone.`, buttons: [{label: "Erase", onclick:`window.location = window.location.pathname+'?erase&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})
+
+    if "close" in query
+        +modal-dialog({title: "Confirmation", message: undefined, buttons: [{label: "I Agree, Close my account", onclick:`window.location = window.location.pathname+'?close&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})
+            p
+                h4(style="margin: 0")
+                    u(style="color: red") Your account will be closed 
+                p All of your data (including #{user.accountCount} accounts saved) will be deleted forever.
+                span This operation can not be undone. Do you aggree?

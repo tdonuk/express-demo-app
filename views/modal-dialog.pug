@@ -5,11 +5,11 @@ mixin modal-dialog(params = {title:"", message:"", buttons:[{label: "Ok", href: 
                 h3= params.title
                 a.xbutton(onclick="resetPage();") X
             if block
-                div(style="padding: 10px 0; display: flex; justify-content: center;")
+                div.dialog-body
                     block
             else
                 div.dialog-body
                     p= params.message
             div.dialog-footer
                 each button in params.buttons
-                    button(onclick=button.onclick, style="padding: 2px; cursor: pointer; margin: 5px; width: 60px;") #{button.label}
+                    button(onclick=button.onclick, style="padding: 2px; cursor: pointer; margin: 5px; min-width: 60px;") #{button.label}

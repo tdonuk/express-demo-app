@@ -13,7 +13,7 @@ body {
     padding: 0 10px;
 }
 
-.error-container, .info-container {
+.error-container, .info-container, .warn-container {
     padding: 5px;
     width: fit-content;
     margin: 5px;
@@ -25,6 +25,10 @@ body {
 
 .info-container {
     color: cornflowerblue;
+}
+
+.warn-container {
+    color: rgb(224, 200, 89);
 }
 
 #loginContainer, #signupContainer {

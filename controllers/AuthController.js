@@ -118,6 +118,17 @@ router.get('/profile', async (req, res) => {
             }
         }
 
+        if("close" in req.query && "confirmed" in req.query) {
+            await UserService.delete(req.user.id);
+            req.logout((err) => {
+                if(err) return next(err);
+                req.flash("warn", "Your account has closed");
+                res.redirect("/login");
+            });
+            req.user = undefined;
+            return;
+        }
+
         if("export" in req.query) {
             const userData = {
                 user: req.user,
@@ -194,9 +205,9 @@ function prepareUser(user) {
 
         delete user.firstname;
         delete user.lastname;
-        
-        delete user.confirmPassword;
     }
+
+    delete user.confirmPassword;
 }
 
 module.exports = router;
