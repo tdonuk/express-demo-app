@@ -27,10 +27,12 @@ app.use(bodyParser.json());
 
 app.use(flash());
 
+const env = require("./env.json");
+
 // Set up session middleware
 app.use(session({
-    secret: 'mysecret',
-    cookie: {_expires: 86400000}, //24 hours
+    secret: env?.secret || 'verySecret',
+    cookie: {_expires: 3600000}, //1 hour
     resave: false,
     rolling: true,
     saveUninitialized: true

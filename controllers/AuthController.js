@@ -104,6 +104,8 @@ router.get('/profile', async (req, res) => {
 
         req.user.accountCount = await AccountService.count(undefined, ownerUser);
 
+        console.log(req.query);
+
         if("erase" in req.query && "confirmed" in req.query) {
             const result = await AccountService.deleteAll(ownerUser);
 
@@ -115,6 +117,20 @@ router.get('/profile', async (req, res) => {
                 req.flash("error", "Erase failed");
             }
         }
+
+        if("export" in req.query) {
+            const userData = {
+                user: req.user,
+                accounts: await AccountService.find(undefined, ownerUser),
+                accountCount: await AccountService.count(undefined, ownerUser)
+            };
+
+            res.setHeader('Content-disposition', 'attachment; filename= data.json');
+            res.setHeader('Content-type', 'application/json');
+            return res.write(JSON.stringify(userData), function (err) {
+                    res.end();
+                });
+        } 
 
         // console.log(req.flash());
 
@@ -178,6 +194,8 @@ function prepareUser(user) {
 
         delete user.firstname;
         delete user.lastname;
+        
+        delete user.confirmPassword;
     }
 }
 
