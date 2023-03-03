@@ -1,0 +1,21 @@
+mixin modal-form(title)
+    div.modal-bg
+        div.dialog-m
+            div.dialog-header
+                h3= title
+                a.xbutton(onclick="window.location = window.location.pathname;") X
+            if block
+                if error
+                    p(class="error-container", style="margin: auto;") #{error}
+
+                if info
+                    p(class="info-container", style="margin: auto;") #{info}
+                    
+                div.dialog-body
+                    block
+            else    
+                div.dialog-body
+                    p= params.message
+            div.dialog-footer
+                input.form-button(type="submit", value="Save")
+                button.form-button(onclick="window.location = window.location.pathname;", type="button", title="Cancel operation") Cancel

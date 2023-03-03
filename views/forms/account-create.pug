@@ -1,0 +1,56 @@
+include base.pug
+
+mixin accountForm(url="/accounts", account)
+    form#accountForm(action=url||"/accounts", method="POST")
+        +modal-form(account ? `Edit: ${account.name}` : "Create Account")
+            span(style="margin-bottom: 10px;") Enter your account info. You can always edit this informations later. For bank accounts, you can add your cards that belongs to this account after you create it.
+
+            table(style="width: 100%; margin-top: 20px; padding: 5px;")
+                tr
+                    td
+                        label.form-label Name:
+                    td
+                        input(type="text", name="name", value=account?account.name:"", placeholder="Some cool website", required, autofocus)
+                        span.required-badge *
+                    td
+                        label.form-label Link:
+                    td
+                        input(type="text", name="url", value=account?account.url:"", placeholder="https://cool-site.com")
+
+                tr
+                    td
+                        label.form-label Email:
+                    td
+                        input(type="email", name="email", value=account?account.email:"", placeholder="dark_knight98@hotmail.com")
+                    td
+                        label.form-label Username:
+                    td
+                        input(type="text", name="username", value=account?account.username:"", placeholder="dark_knight98")
+
+                tr
+                    td
+                        label.form-label Password:
+                    td
+                        input(type="text", name="password", value=account?account.password:"", placeholder="1234")
+                tr
+                    td
+                        label.form-label Phone:
+                    td
+                        input(type="tel", name="phone", value=account?account.phone:"", placeholder="11111111111")
+                        
+                - var type = (account&&account.type) ? account.type : undefined
+                - var isTypeBank = type==="bank";
+                tr
+                    td
+                        label.form-label Type:
+                    td
+                        select(name="type")
+                            option(value="", label="Optional") ...
+                            option(value="bank", selected=isTypeBank) Bank Account
+                            option(value="plain", , selected=!isTypeBank) Plain
+
+                tr
+                    td
+                        label.form-label Notes:
+                    td(colspan=3)
+                        textarea(style="width: 100%;", id="accountFormTextArea", name="description", cols="30", rows="4", resizable="false", maxlength="200", placeholder="Notes, descriptions, any additional info you need to remember when you need it") #{account?account.description:""}

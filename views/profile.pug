@@ -1,0 +1,79 @@
+extends layout
+
+include forms/change-password.pug
+
+block content
+    div#profileContainer
+        div
+            h2.page-title Profile
+
+            table
+                tr
+                    td
+                        label.form-label Email:
+                    td
+                        p.m-5 #{user.email}
+                
+                if user.name
+                    tr
+                        td
+                            label.form-label Name:
+                        td
+                            p.m-5 #{user.name.firstname + " " + user.name.lastname}
+                
+                if user.phoneNumber
+                    tr
+                        td
+                            label.form-label Phone:
+                        td
+                            p.m-5 #{user.phoneNumber}
+                
+                tr
+                    td
+                        label.form-label Member since:
+                    td
+                        p.m-5 #{new Date(user.cdate).toLocaleDateString("en-UK")}
+                
+                if user.udate
+                    tr
+                        td
+                            label.form-label Last update:
+                        td
+                            p.m-5 #{new Date(user.udate).toLocaleDateString("en-UK")}
+
+                tr
+                    td
+                        label.form-label Guarding Accounts:
+                    td
+                        p.m-5 #{user.accountCount}
+
+                tr
+                    td
+                        label.form-label Password:
+                    td
+                        p.m-5
+                            a(href="?changePassword") change password
+
+                tr
+                    td
+                        label.form-label Data:
+                    td
+                        p.m-5
+                            a(href="?export") export your data
+
+        div.danger-zone
+            h3(style="margin: 10px 0; padding: 0;") Danger Zone
+
+            p(style="color: black;") <u>These operations can not be undone.</u> You can erase all of your data that is stored in <b>PGUARD</b>, or you can permanently close your account if you wish. Either way, <u>all of your data</u> stored in our databases will be removed forever.
+
+            h5
+                a(href="?erase") erase my data
+
+            h5        
+                a(href="/account/close") close my account
+
+    if "changePassword" in query
+        +passwordForm(bodyWithError ? bodyWithError.pop() : undefined)
+
+    if "erase" in query
+        +modal-dialog({title: "Confirmation", message: `All of your accounts (${user.accountCount}) will be deleted forever. This operation can not be undone.`, buttons: [{label: "Erase", onclick:`window.location = window.location.pathname+'?erase&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})

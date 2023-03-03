@@ -1,0 +1,17 @@
+doctype=html
+
+div#headerContainer
+    div(style="display: flex; align-items: center;")
+        img(src="/favicon.ico", style="width: 25px; height: 25px;")
+        h2(style="color: blue") 
+            a(href="/main" class="navlink") PGUARD
+    if user
+        div
+            a(href="/main" class="navlink") Accounts
+            a(href="/profile" class="navlink") Profile
+            a(href="/logout" class="navlink") Logout
+    
+    else
+        div
+            a(href="/login" class="navlink") Login
+            a(href="/signup" class="navlink") Sign Up  

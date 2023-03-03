@@ -1,0 +1,34 @@
+extends layout
+
+
+block content
+    -var user = user?.pop();
+
+    -var initialEmail = user?.email;
+    -var initialPassword = user?.password;
+
+    div#loginContainer
+        h2 Log In
+        form(action="/login", method="POST", style="margin: auto;")
+            if error 
+                p(class="error-container", style="margin: auto;") #{error}
+            if info
+                p(class="info-container", style="margin: auto;") #{info}
+            
+            table
+                tr
+                    td
+                        label(for="email") Email: 
+                    td 
+                        input(type="email", id="email", name="email", placeholder="Email", value=initialEmail||"", autocomplete="email", required, autofocus)
+                tr
+                    td 
+                        label(for="password") Password: 
+                    td
+                        input(type="password", id="password", name="password", placeholder="Password", value=initialPassword||"", autocomplete="current-passwword", required)
+
+            input(type="submit", value="Log In" style="margin: 10px auto; display: block;")
+
+            br
+
+            a(href="/signup" style="margin: auto; display: block; width: fit-content;") or create an account

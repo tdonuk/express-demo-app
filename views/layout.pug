@@ -1,0 +1,74 @@
+doctype=html 
+
+include modal-dialog.pug
+
+-var version = "v1.0.1";
+
+html 
+    head 
+        title #{title || "PGUARD"}
+        link(rel="icon", type="image/x-icon", href="/favicon.ico")
+        
+        block stylesheets
+            link(rel='stylesheet', href='stylesheets/style.css')
+        block scripts 
+            script(src="/scripts/util.js")
+            
+    body(id="body", onload="init();")
+        div#toastContainer
+            if info
+                if Array.isArray(info)
+                    each inf in info
+                        div.toast-container
+                            div.toast-header.info
+                                span.toast-title Info
+                                span.xbutton X
+                            div.toast-body
+                                p.toast-message #{inf}
+                else
+                    div.toast-container
+                                div.toast-header.info
+                                    span.toast-title Info
+                                    span.xbutton X
+                                div.toast-body
+                                    p.toast-message #{info}
+                
+            if error
+                if Array.isArray(error)
+                    each err in error
+                        div.toast-container
+                            div.toast-header.error
+                                span.toast-title Error
+                                span.xbutton X
+                            div.toast-body
+                                p.toast-message #{err}
+                else
+                    div.toast-container
+                                div.toast-header.error
+                                    span.toast-title Error
+                                    span.xbutton X
+                                div.toast-body
+                                    p.toast-message #{error}
+
+            if warn
+                if Array.isArray(warn)
+                    each w in warn
+                        div.toast-container
+                            div.toast-header.warn
+                                span.toast-title Warn
+                                span.xbutton X
+                            div.toast-body
+                                p.toast-message #{w}
+                else
+                    div.toast-container
+                                div.toast-header.warn
+                                    span.toast-title Warn
+                                    span.xbutton X
+                                div.toast-body
+                                    p.toast-message #{warn}
+        block header
+            include header.pug
+        div#content
+            block content
+        block footer
+            include footer.pug

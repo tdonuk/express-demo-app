@@ -1,0 +1,45 @@
+extends layout
+
+block content
+    div#content
+        div#signupContainer(style="padding: 10px;")
+            h2 Sign Up
+
+            -var user = user?.pop();
+
+            -var email = user?user.email:""
+            -var password = user?user.password:""
+            -var confirmPassword = user?user.confirmPassword:"";
+
+            form(action="/signup", method="POST")
+                if error 
+                    p(class="error-container", style="margin: auto;") #{error}
+                if info
+                    p(class="info-container", style="margin: auto;") #{info}
+                table 
+                    tr
+                        td 
+                            label(for="email") Email: 
+                        td    
+                            input(type="email", id="email", name="email", value=email,placeholder="Email", autocomplete="email", required, autofocus)
+                            span.required-badge *
+
+                    tr 
+                        td 
+                            label(for="password") Password: 
+                        td
+                            input(type="password", id="password", name="password", value=password,placeholder="Password", autocomplete="current-passwword", required)
+                            span.required-badge *
+
+                    tr 
+                        td 
+                            label(for="confirmPassword") Confirm Password: 
+                        td
+                            input(type="password", id="confirmPassword", name="confirmPassword", value=confirmPassword,placeholder="Password", autocomplete="current-passwword", required)
+                            span.required-badge *
+
+                input(type="submit", value="Sign Up", style="margin: 10px auto; display: block;")
+
+                br
+
+                a(href="/login" style="margin: auto; display: block; width: fit-content;") already have an account? 
