@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "undefined/subscriptions/6c94b9d7-aed9-4996-87bc-7462803ff611/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/pguard",
-    "appService.deploySubpath": "."
-}
