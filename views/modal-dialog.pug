@@ -1,9 +1,9 @@
-mixin modal-dialog(params = {title:"", message:"", buttons:[{label: "Ok", href: "/"}, {label: "Cancel", onclick: "window.location = window.location.pathname"}]})
+mixin modal-dialog(params = {title:"", message:"", buttons:[{label: "Ok", href: "/"}, {label: "Cancel", onclick: ""}]})
     div.modal-bg
         div.dialog-m
             div.dialog-header
                 h3= params.title
-                a.xbutton(onclick="resetPage();") X
+                a.xbutton.cancel X
             if block
                 div.dialog-body
                     block
@@ -12,4 +12,8 @@ mixin modal-dialog(params = {title:"", message:"", buttons:[{label: "Ok", href: 
                     p= params.message
             div.dialog-footer
                 each button in params.buttons
-                    button(onclick=button.onclick, style="padding: 2px; cursor: pointer; margin: 5px; min-width: 60px;") #{button.label}
+                    if(button.onclick)
+                        a(href=`${button.onclick}`)
+                            button(class=`${button.className}`, style="padding: 2px; cursor: pointer; margin: 5px; min-width: 60px;") #{button.label}
+                    else
+                        button(class=`${button.className}`, style="padding: 2px; cursor: pointer; margin: 5px; min-width: 60px;") #{button.label}

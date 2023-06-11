@@ -3,7 +3,7 @@ mixin modal-form(title)
         div.dialog-m
             div.dialog-header
                 h3= title
-                a.xbutton(onclick="window.location = window.location.pathname;") X
+                a.xbutton.cancel X
             if block
                 if error
                     p(class="error-container", style="margin: auto;") #{error}
@@ -18,4 +18,4 @@ mixin modal-form(title)
                     p= params.message
             div.dialog-footer
                 input.form-button(type="submit", value="Save")
-                button.form-button(onclick="window.location = window.location.pathname;", type="button", title="Cancel operation") Cancel
+                button.form-button.cancel(type="button", title="Cancel operation") Cancel

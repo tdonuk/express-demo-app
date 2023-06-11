@@ -5,21 +5,29 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const pug = require('pug');
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
-// FIREBASE
-const firebase = require("firebase-admin");
-
-var serviceAccount = require("./adminsdk.json");
-
-firebase.initializeApp({
-  credential: firebase.credential.cert(serviceAccount)
+helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+        scriptSrc: ["'self'", "'https://cdn.jsdelivr.net'"],
+        "script-src-attr": ["'none'", "'unsafe-inline'"]
+    },
 });
 
-const UserService = require('./service/UserService');
+const rateLimiter = rateLimit({
+    windowMs: 1*60*1000,
+    max: 60
+});
+
 const AccountService = require("./service/AccountService");
 
 // Initialize Express app
 const app = express();
+
+app.use(helmet());
+app.use(rateLimiter);
 
 // Set up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,7 +56,7 @@ app.use(express.static("public"));
 
 // Set up routes
 app.get('/', (req, res) => {
-    if(req.isAuthenticated()) res.redirect('main');
+    if(req.isAuthenticated()) res.redirect('home');
     else res.redirect("/login");
 });
 
@@ -56,16 +64,15 @@ const authController = require("./controllers/AuthController");
 
 app.use(authController);
 
-app.get('/main', async (req, res) => {
+app.get('/home', async (req, res) => {
     if (req.isAuthenticated()) {
-        const initialUserPath = `${UserService.fieldPath()}/${req.user.id}`;
-
         const params = {user: req.user, query: req.query, ...req.flash()}
 
         const search = req.query.search;
 
-        const accountList = await AccountService.find({}, initialUserPath);
-        params.accounts = accountList;
+        const accountList = await AccountService.find({fields: {"user_id": req.user.id}});
+
+        params.accounts = accountList || [];
 
         console.log(accountList);
 
@@ -85,7 +92,7 @@ app.get('/main', async (req, res) => {
 
         if(req.query.delete) {
             if(req.query.confirmed) {
-                const result = await AccountService.delete(req.query.delete, initialUserPath);
+                const result = await AccountService.delete(req.query.delete);
 
                 console.log(result);
 
@@ -103,9 +110,7 @@ app.get('/main', async (req, res) => {
                 }
             }
 
-            const account = accountList.filter(a => a.id === req.query.delete).pop();
-
-            params.toDelete = account;
+            params.toDelete = accountList.filter(a => a.id === req.query.delete).pop();
         }
 
         if(req.query.edit) {
@@ -126,22 +131,23 @@ app.get('/main', async (req, res) => {
 });
 
 app.post("/accounts", async (req, res) => {
-    const result = await AccountService.save(req.body, `${UserService.fieldPath()}/${req.user.id}`)
+    req.body.user_id = req.user.id;
+    const result = await AccountService.save(req.body);
 
     req.flash("info", "Account "+ result.name +" created successfully");
     req.flash("createdAccount", result);
 
-    res.redirect("/main");
+    res.redirect("/home");
 });
 
 app.route("/accounts/:id").post(async (req, res) => {
     req.body.id = req.params.id;
-    const result = await AccountService.save(req.body, `${UserService.fieldPath()}/${req.user.id}`)
+    const result = await AccountService.save(req.body);
 
     req.flash("info", "Account "+ result.name +" edit succeeded");
     req.flash("editedAccount", result);
 
-    res.redirect("/main");
+    res.redirect("/home");
 });
 
 

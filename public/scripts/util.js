@@ -113,3 +113,24 @@ function _removeToast(toast) {
     toasts.splice(toasts.indexOf(toast), 1);
     toast.parentNode?.removeChild(toast);
 }
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const createButton = document.getElementById("createButton");
+
+    for(let el of document.getElementsByClassName("cancel")) {
+        el.addEventListener('click', () => {
+            console.log("cancelling..");
+            resetPage();
+        });
+    }
+
+    for(let el of document.getElementsByClassName("account-property")) {
+        el.addEventListener("click", (e)=> {
+            copy(el.attributes.getNamedItem("data-account").value);
+        });
+    }
+
+    init();
+});
