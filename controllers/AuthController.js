@@ -105,7 +105,7 @@ router.get("/logout", (req, res, next) => {
 
 router.get('/profile', async (req, res) => {
     if (req.isAuthenticated()) {
-        req.user.accountCount = await AccountService.count(undefined);
+        req.user.accountCount = await AccountService.count({"user_id": req.user.id});
 
         console.log(req.query);
 
@@ -135,8 +135,8 @@ router.get('/profile', async (req, res) => {
         if("export" in req.query) {
             const userData = {
                 user: req.user,
-                accounts: await AccountService.find(undefined, ownerUser),
-                accountCount: await AccountService.count(undefined, ownerUser)
+                accounts: await AccountService.find({fields: {"user_id": req.user.id}}),
+                accountCount: await AccountService.count({fields: {"user_id": req.user.id}})
             };
 
             res.setHeader('Content-disposition', 'attachment; filename= data.json');
