@@ -12,7 +12,7 @@ block content
             h2.page-title Accounts
             div(style="display: flex; align-items: center;")
                 form(action="", style="margin: auto;") 
-                    input#search(type="search", name="search", value=query.search||"", placeholder="Search", style="margin-right: 5px;")
+                    input#search(type="search", name="search", value=query.search||"", placeholder="Search", style="margin-right: 5px;" autofocus)
                     input(type="submit", value="Search")
                 button(onclick="window.location = window.location.pathname", style="margin-left: 5px;", title="Resets the search") Reset
 
@@ -28,7 +28,7 @@ block content
                         p You have #{accounts.length} accounts being guarded by PGUARD
                         small * Click the account title to edit its information
                         br
-                        small * Click the accounts properties (email, password..) to copy it to your clipboard
+                        small * Click the account's properties (email, password..) to copy it to your clipboard
                         br
                         small * Click the X button in each accounts card to delete it forever
                         br

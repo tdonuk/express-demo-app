@@ -62,7 +62,7 @@ app.get('/main', async (req, res) => {
 
         const params = {user: req.user, query: req.query, ...req.flash()}
 
-        const search = req.query.search;
+        const search = req.query?.search?.toLowerCase();
 
         const accountList = await AccountService.find({}, initialUserPath);
         params.accounts = accountList;
@@ -72,12 +72,12 @@ app.get('/main', async (req, res) => {
         let filteredList = [];
         if("search" in req.query) {
             filteredList = accountList.filter(a => 
-                a.name.includes(search)
-                || a.url?.includes(search)
-                || a.email?.includes(search)
-                || a.username?.includes(search)
-                || a.phone?.includes(search)
-                || a.password?.includes(search)
+                a.name.toLowerCase().includes(search)
+                || a.url?.toLowerCase().includes(search)
+                || a.email?.toLowerCase().includes(search)
+                || a.username?.toLowerCase().includes(search)
+                || a.phone?.toLowerCase().includes(search)
+                || a.password?.toLowerCase().includes(search)
             );
             params.filteredAccounts = filteredList;
         }
