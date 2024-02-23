@@ -5,6 +5,7 @@ const UserService = require('../service/UserService');
 const AccountService = require('../service/AccountService');
 const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
+const db = require("../db");
 
 router.get('/signup', (req, res) => {
     res.render('signup', req.flash());
@@ -43,13 +44,17 @@ router.post('/signup', async (req, res) => {
     });
 });
 
-router.get('/login', (req, res) => {
+router.get('/login', async (req, res) => {
     res.render('login', {...req.flash(), ...req.query});
 });
 
 passport.use(new LocalStrategy({passwordField: "password", usernameField: "email"}, async (email, password, done) => {
     console.log("trying to authenticate " + email);
-    const user = await UserService.findByEmail(email);
+    const users = await UserService.findByEmail(email);
+
+    if(users && (users.length > 1 || users.length < 1)) throw new Error(`get users with email: ${email} found users: ${users.length}`);
+
+    const user = users[0];
 
     if(!user) return done(null, false, {message: "Incorrect email or password"})
 
@@ -82,7 +87,7 @@ router.post('/login', (req, res, next) => {
 
         req.login(user, (err) => {
             if(err) next(err);
-            res.redirect("/main");
+            res.redirect("/home");
         })
     })(req, res, next);
 });
@@ -100,14 +105,12 @@ router.get("/logout", (req, res, next) => {
 
 router.get('/profile', async (req, res) => {
     if (req.isAuthenticated()) {
-        const ownerUser = `${UserService.fieldPath()}/${req.user.id}`;
-
-        req.user.accountCount = await AccountService.count(undefined, ownerUser);
+        req.user.accountCount = await AccountService.count({"user_id": req.user.id});
 
         console.log(req.query);
 
         if("erase" in req.query && "confirmed" in req.query) {
-            const result = await AccountService.deleteAll(ownerUser);
+            const result = await AccountService.deleteAll();
 
             if(result) {
                 req.flash("info", "Erase successfully");
@@ -132,8 +135,8 @@ router.get('/profile', async (req, res) => {
         if("export" in req.query) {
             const userData = {
                 user: req.user,
-                accounts: await AccountService.find(undefined, ownerUser),
-                accountCount: await AccountService.count(undefined, ownerUser)
+                accounts: await AccountService.find({fields: {"user_id": req.user.id}}),
+                accountCount: await AccountService.count({fields: {"user_id": req.user.id}})
             };
 
             res.setHeader('Content-disposition', 'attachment; filename= data.json');
@@ -197,16 +200,6 @@ function validatePassword(password) {
 }
 
 function prepareUser(user) {
-    if(user.firstname || user.lastname) {
-        user.name = {
-            firstname: user.firstname,
-            lastname: user.lastname
-        };
-
-        delete user.firstname;
-        delete user.lastname;
-    }
-
     delete user.confirmPassword;
 }
 

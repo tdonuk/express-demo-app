@@ -14,7 +14,7 @@ block content
                 form(action="", style="margin: auto;") 
                     input#search(type="search", name="search", value=query.search||"", placeholder="Search", style="margin-right: 5px;" autofocus)
                     input(type="submit", value="Search")
-                button(onclick="window.location = window.location.pathname", style="margin-left: 5px;", title="Resets the search") Reset
+                button.cancel(style="margin-left: 5px;", title="Resets the search") Reset
 
         div#accountsContainer
             if accounts
@@ -46,17 +46,17 @@ block content
                                     if account.email
                                         div.account-line
                                             label.account-field-label Email
-                                            a.account-property(onclick=`copy('${account.email}')`, title="Click to copy email") #{account.email}
+                                            a.account-property(data-account=`${account.email}`, title="Click to copy email") #{account.email}
 
                                     if account.username
                                         div.account-line
                                             label.account-field-label Username
-                                            a.account-property(onclick=`copy('${account.username}')`, title="Click to copy password") #{account.username}
+                                            a.account-property(data-account=`${account.username}`, title="Click to copy password") #{account.username}
                                     
                                     if account.password
                                         div.account-line
                                             label.account-field-label Password
-                                            a.account-property(onclick=`copy('${account.password}')`, title="Click to copy") #{query.clear ? account.password : "******"}
+                                            a.account-property(data-account=`${account.password}`, title="Click to copy") #{query.clear ? account.password : "******"}
 
                                     if account.url
                                         div.account-line
@@ -66,7 +66,7 @@ block content
                                     if account.phone
                                         div.account-line
                                             label.account-field-label Phone
-                                            a.account-property(onclick=`copy('${account.phone}')`, title="Click to copy") #{account.phone}
+                                            a.account-property(data-account=`${account.phone}`, title="Click to copy") #{account.phone}
 
                                     if account.udate
                                         div.account-line
@@ -77,10 +77,11 @@ block content
                                         label.account-field-label Created At
                                         span #{new Date(account.cdate).toLocaleDateString("en-UK")}
         div#accountActions
-            button(onclick="window.location = window.location.pathname+'?create'", style="padding: 5px; cursor: pointer;", title="Click to create a new account") Create
+            a(href="?create")
+                button(id="createButton", style="padding: 5px; cursor: pointer;", title="Click to create a new account") Create
 
     if toDelete
-        +modal-dialog({title: "Confirmation", message: `'${toDelete.name}' will be deleted forever. This operation can not be undone.`, buttons: [{label: "Delete", onclick:`window.location = window.location.pathname+'?delete=${toDelete.id}&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})
+        +modal-dialog({title: "Confirmation", message: `'${toDelete.name}' will be deleted forever. This operation can not be undone.`, buttons: [{label: "Delete", onclick:`?delete=${toDelete.id}&confirmed=true`}, {label: "Cancel", onclick: ""}]})
 
     if "create" in query
         +accountForm()

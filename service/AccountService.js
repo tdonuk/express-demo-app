@@ -1,9 +1,16 @@
 const BaseService = require("./baseService");
+const db = require("../db");
 
 
 class AccountService extends BaseService {
-    fieldPath(initialPath) {
-        return initialPath ? initialPath + "/accounts" : "accounts";
+    table() {
+        return "ACCOUNTS";
+    }
+
+    async findByCustomSQL(sql) {
+        const queryString = `SELECT * FROM ${this.table()} ${sql}`;
+
+        return await db.findByCustomSQL(queryString);
     }
 } 
 

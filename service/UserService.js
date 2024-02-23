@@ -1,31 +1,14 @@
 const BaseService = require("./baseService");
 
-const bcrypt = require("bcrypt");
-
-const firestore = require("firebase-admin").firestore();
+const db = require("../db");
 
 class UserService extends BaseService {
-    fieldPath(initialPath) {
-        return initialPath ? initialPath + "/users" : "users";
+    table() {
+        return "USERS";
     }
 
     async findByEmail(email) {
-        let user;
-
-        await firestore.collection(this.fieldPath()).where("email", "==", email).get().then((value) => {
-            console.log(`found ${value.size} users with email '${email}'`);
-    
-            if(value.size > 1){
-                throw new Error("email conflict");
-            }
-            else if(value.size === 0) {
-                return undefined;
-            }
-    
-            user = value.docs.pop().data();
-        });
-
-        return user;
+        return await db.findByExample(this.table(), {sortField: "cdate", sortOrder: "DESC", fields: {email: email}});
     }
 }
 

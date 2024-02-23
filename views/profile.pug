@@ -76,10 +76,10 @@ block content
         +passwordForm(bodyWithError ? bodyWithError.pop() : undefined)
 
     if "erase" in query
-        +modal-dialog({title: "Confirmation", message: `All of your accounts (${user.accountCount}) will be deleted forever. This operation can not be undone.`, buttons: [{label: "Erase", onclick:`window.location = window.location.pathname+'?erase&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})
+        +modal-dialog({title: "Confirmation", message: `All of your accounts (${user.accountCount}) will be deleted forever. This operation can not be undone.`, buttons: [{label: "Erase", onclick:`?erase&confirmed=true`}, {label: "Cancel", className: "cancel"}]})
 
     if "close" in query
-        +modal-dialog({title: "Confirmation", message: undefined, buttons: [{label: "I Agree, Close my account", onclick:`window.location = window.location.pathname+'?close&confirmed=true'`}, {label: "Cancel", onclick: "resetPage()"}]})
+        +modal-dialog({title: "Confirmation", message: undefined, buttons: [{label: "I Agree, Close my account", onclick:`?close&confirmed=true`}, {label: "Cancel", className: "cancel"}]})
             p
                 h4(style="margin: 0")
                     u(style="color: red") Your account will be closed 
